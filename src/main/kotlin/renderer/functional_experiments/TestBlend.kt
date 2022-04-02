@@ -17,7 +17,7 @@ fun main() {
     GL46.glClearColor(0.0f, 0.2f, 0.0f, 0.0f)
     GL46.glEnable(GL46.GL_DEPTH_TEST)
     GL46.glEnable(GL46.GL_BLEND);
-    GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+    GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA)
 
     val shader = Shader(
         resourceManager.getAsString("shaders/vs.glsl"),
@@ -26,7 +26,7 @@ fun main() {
     shader.setUp()
     shader.use()
 
-    val sprite = Sprite(Texture("tiles.png"), 0, 0)
+    val sprite = Sprite(Texture("tiles.png"), 2, 0)
     sprite.setUp()
     sprite.bind(shader)
 

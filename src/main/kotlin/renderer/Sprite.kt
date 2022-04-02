@@ -60,9 +60,9 @@ class Sprite(
         GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, size, (2 * 4).toLong())
         GL46.glEnableVertexAttribArray(1)
         // bind texture row, col
-        GL46.glVertexAttribPointer(2, 1, GL46.GL_INT, false, size, (4 * 4).toLong())
+        GL46.glVertexAttribIPointer(2, 1, GL46.GL_INT, size, (4 * 4).toLong())
         GL46.glEnableVertexAttribArray(2)
-        GL46.glVertexAttribPointer(3, 1, GL46.GL_INT, false, size, (5 * 4).toLong())
+        GL46.glVertexAttribIPointer(3, 1, GL46.GL_INT, size, (5 * 4).toLong())
         GL46.glEnableVertexAttribArray(3)
     }
 
