@@ -27,15 +27,15 @@ fun main() {
     sprite.bind(shader)
 
     val ortho = Matrix4f().ortho(
-        -(16f/9f),
-        (16f/9f),
+        -(16f / 9f),
+        (16f / 9f),
         -1f,
         1f,
         -1f,
         1f
     )
-    val view = Matrix4f().translate(
-        Vector3f(0f, 0f, 0f).negate()
+    val view = Matrix4f().scale(1f).translate(
+        Vector3f(0.0f, 0.0f, 0f).negate()
     )
     shader.uniformMatrix4fv("projection", ortho)
     shader.uniformMatrix4fv("view", view)
