@@ -19,6 +19,7 @@ class Shader(private val vertexShaderCode: String, private val fragmentShaderCod
     override fun tearDown() {
         GL46.glUseProgram(0)
         GL46.glDeleteProgram(this.programID)
+        this.programID = 0
     }
 
     fun use() {
