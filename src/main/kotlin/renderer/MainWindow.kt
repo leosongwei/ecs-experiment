@@ -1,6 +1,7 @@
 package renderer
 
-import org.lwjgl.glfw.*
+import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
 import org.lwjgl.system.MemoryStack
@@ -19,15 +20,13 @@ class MainWindow(width: Int = 1920, height: Int = 1080) {
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set()
 
-        // Configure GLFW
-
+        // Initialize GLFW. Most GLFW functions will not work before doing this.
+        check(GLFW.glfwInit()) { "Unable to initialize GLFW" }
         // Configure GLFW
         GLFW.glfwDefaultWindowHints() // optional, the current window hints are already the default
-
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4)
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 6)
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE) // the window will stay hidden after creation
-
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE) // the window will be resizable
 
         // Create the window
@@ -82,7 +81,7 @@ class MainWindow(width: Int = 1920, height: Int = 1080) {
         GL11.glEnable(GL11.GL_DEPTH_TEST)
     }
 
-    fun swapBuffer(){
+    fun swapBuffers(){
         GLFW.glfwSwapBuffers(this.window)
     }
 }
