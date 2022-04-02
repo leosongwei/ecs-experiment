@@ -6,44 +6,54 @@ import org.lwjgl.opengl.GL46
 import org.lwjgl.system.MemoryStack
 import java.nio.FloatBuffer
 
-class Shader(vertexShaderCode: String, fragmentShaderCode: String) {
-    private val programID: Int
+class Shader(private val vertexShaderCode: String, private val fragmentShaderCode: String): GLResource {
+    private var programID: Int = 0
 
-    init {
+    override fun setUp() {
         val vertexShaderProgram = compileShaderFromString(GL46.GL_VERTEX_SHADER, vertexShaderCode)
         val fragmentShaderProgram = compileShaderFromString(GL46.GL_FRAGMENT_SHADER, fragmentShaderCode)
-        programID = GL46.glCreateProgram()
+        this.programID = GL46.glCreateProgram()
         linkShaders(programID, vertexShaderProgram, fragmentShaderProgram)
+    }
+
+    override fun tearDown() {
+        GL46.glUseProgram(0)
+        GL46.glDeleteProgram(this.programID)
     }
 
     fun use() {
         GL46.glUseProgram(programID)
     }
 
-    fun getUniformLocation(name: String?): Int {
+    fun getUniformLocation(name: String): Int {
         return GL46.glGetUniformLocation(programID, name)
     }
 
-    fun uniformMatrix4fv(name: String?, matrix: Matrix4f) {
+    fun uniformMatrix4fv(name: String, matrix: Matrix4f) {
         MemoryStack.stackPush().use { stack -> uniformMatrix4fv(name, matrix, stack) }
     }
 
-    fun uniformMatrix4fv(name: String?, matrix: Matrix4f, stack: MemoryStack) {
+    fun uniformMatrix4fv(name: String, matrix: Matrix4f, stack: MemoryStack) {
         val buffer = matrix[stack.mallocFloat(16)]
         uniformMatrix4fv(name, buffer)
     }
 
-    fun uniformMatrix4fv(name: String?, buffer: FloatBuffer?) {
+    fun uniformMatrix4fv(name: String, buffer: FloatBuffer?) {
         val position = getUniformLocation(name)
         GL46.glUniformMatrix4fv(position, false, buffer)
     }
 
-    fun uniform3fv(name: String?, vector: Vector3f, stack: MemoryStack) {
+    fun uniform1i(name: String, integer: Int) {
+        val position = getUniformLocation(name)
+        GL46.glUniform1i(position, integer)
+    }
+
+    fun uniform3fv(name: String, vector: Vector3f, stack: MemoryStack) {
         val buffer = vector[stack.mallocFloat(3)]
         uniform3fv(name, buffer)
     }
 
-    fun uniform3fv(name: String?, buffer: FloatBuffer?) {
+    fun uniform3fv(name: String, buffer: FloatBuffer?) {
         val position = getUniformLocation(name)
         GL46.glUniform3fv(position, buffer)
     }
