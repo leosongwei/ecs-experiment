@@ -1,10 +1,14 @@
-package renderer
+package renderer.functional_experiments
 
 import common.ResourceFile
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL46
+import renderer.MainWindow
+import renderer.Shader
+import renderer.Sprite
+import renderer.Texture
 
 fun main() {
     val mainWindow = MainWindow()
@@ -31,8 +35,8 @@ fun main() {
         (16f / 9f),
         -1f,
         1f,
-        -1f,
-        1f
+        1f,
+        -1f
     )
     val view = Matrix4f().scale(1f).translate(
         Vector3f(0.0f, 0.0f, 0f).negate()
@@ -49,7 +53,7 @@ fun main() {
         sprite.render()
 
         shader.uniformMatrix4fv("model",
-            Matrix4f().translate(0.3f, 0.3f, 0.1f)
+            Matrix4f().translate(0.3f, 0.3f, -0.1f)
         )
         sprite.render()
 
