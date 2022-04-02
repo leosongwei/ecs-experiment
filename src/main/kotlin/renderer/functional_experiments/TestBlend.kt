@@ -1,6 +1,6 @@
 package renderer.functional_experiments
 
-import common.ResourceFile
+import utils.ResourceFile
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW
@@ -26,7 +26,7 @@ fun main() {
     shader.setUp()
     shader.use()
 
-    val sprite = Sprite(Texture("tiles.png"))
+    val sprite = Sprite(Texture("tiles.png"), 0, 0)
     sprite.setUp()
     sprite.bind(shader)
 

@@ -1,4 +1,4 @@
-package common
+package utils
 
 class ResourceFile {
     fun getAsBytes(filepath: String): ByteArray {

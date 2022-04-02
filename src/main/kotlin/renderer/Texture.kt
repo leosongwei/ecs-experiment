@@ -3,7 +3,7 @@ package renderer
 import org.lwjgl.opengl.GL46
 import org.lwjgl.stb.STBImage
 import org.lwjgl.system.MemoryUtil
-import common.ResourceFile
+import utils.ResourceFile
 
 class Texture(private val filepath: String): GLResource {
     companion object {
