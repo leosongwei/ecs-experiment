@@ -8,21 +8,21 @@ import org.lwjgl.stb.STBImage
 import org.lwjgl.system.MemoryUtil
 import common.ResourceFile
 
-class Texture(filepath: String?) {
+class Texture(filepath: String) {
     private val textureID: Int
-    val width: Int
-    val height: Int
+    private val width: Int
+    private val height: Int
 
     init {
         val xRef = intArrayOf(0)
         val yRef = intArrayOf(0)
-        val channels_in_file = intArrayOf(0)
+        val channelsInFile = intArrayOf(0)
         val resource = ResourceFile()
-        val bytes: ByteArray = resource.getAsBytes(filepath)!!
+        val bytes: ByteArray = resource.getAsBytes(filepath)
         val fileBuffer = MemoryUtil.memAlloc(bytes.size)
         fileBuffer.put(0, bytes)
         STBImage.stbi_set_flip_vertically_on_load(true)
-        val buffer = STBImage.stbi_load_from_memory(fileBuffer, xRef, yRef, channels_in_file, 3)
+        val buffer = STBImage.stbi_load_from_memory(fileBuffer, xRef, yRef, channelsInFile, 3)
         MemoryUtil.memFree(fileBuffer)
         if (buffer == null) {
             println(STBImage.stbi_failure_reason())
@@ -48,6 +48,14 @@ class Texture(filepath: String?) {
             buffer)
         GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
         STBImage.stbi_image_free(buffer!!)
+    }
+
+    fun getWidth(): Int {
+        return this.width
+    }
+
+    fun getHeight(): Int {
+        return this.height
     }
 
     fun bind(textureNumber: Int) {

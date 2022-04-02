@@ -1,13 +1,14 @@
 package common
 
 class ResourceFile {
-    fun getAsBytes(filepath: String?): ByteArray? {
-        return try {
-            val classLoader = javaClass.classLoader
-            val stream = classLoader.getResourceAsStream(filepath)!!
-            stream.readAllBytes()
-        } catch (e: Exception) {
-            null
-        }
+    fun getAsBytes(filepath: String): ByteArray {
+        val classLoader = javaClass.classLoader
+        val stream = classLoader.getResourceAsStream(filepath)!!
+        return stream.readAllBytes()
+    }
+
+    fun getAsString(filepath: String): String {
+        val bytes = this.getAsBytes(filepath)
+        return bytes.decodeToString()
     }
 }
