@@ -2,8 +2,7 @@ package renderer
 
 import org.lwjgl.opengl.GL46
 import org.lwjgl.stb.STBImage
-import org.lwjgl.system.MemoryUtil
-import utils.ResourceFile
+import utils.readTexture
 
 class Texture(private val filepath: String): GLResource {
     companion object {
@@ -16,22 +15,10 @@ class Texture(private val filepath: String): GLResource {
     private var height: Int = 0
 
     override fun setUp() {
-        val xRef = intArrayOf(0)
-        val yRef = intArrayOf(0)
-        val channelsInFile = intArrayOf(0)
-        val resource = ResourceFile()
-        val bytes: ByteArray = resource.getAsBytes(this.filepath)
-        val fileBuffer = MemoryUtil.memAlloc(bytes.size)
-        fileBuffer.put(0, bytes)
-        STBImage.stbi_set_flip_vertically_on_load(true)
-        val buffer = STBImage.stbi_load_from_memory(fileBuffer, xRef, yRef, channelsInFile, 4)
-        MemoryUtil.memFree(fileBuffer)
-        if (buffer == null) {
-            println(STBImage.stbi_failure_reason())
-        }
+        val (buffer, width, height) = readTexture(this.filepath)
         assert(buffer != null)
-        this.width = xRef[0]
-        this.height = yRef[0]
+        this.width = width
+        this.height = height
         this.textureID = GL46.glGenTextures()
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID)
         GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_S, GL46.GL_REPEAT)

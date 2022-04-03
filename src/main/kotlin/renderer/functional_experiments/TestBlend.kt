@@ -5,10 +5,7 @@ import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL46
-import renderer.MainWindow
-import renderer.Shader
-import renderer.Sprite
-import renderer.Texture
+import renderer.*
 
 fun main() {
     val mainWindow = MainWindow()
@@ -43,6 +40,9 @@ fun main() {
     )
     shader.uniformMatrix4fv("projection", ortho)
     shader.uniformMatrix4fv("view", view)
+
+    val textureAtlas = TextureAtlas("tiles.png")
+    textureAtlas.bind(shader)
 
     while (true) {
         GL46.glClear(GL46.GL_COLOR_BUFFER_BIT or GL46.GL_DEPTH_BUFFER_BIT)
