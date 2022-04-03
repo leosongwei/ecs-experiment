@@ -2,7 +2,9 @@ package renderer
 
 import org.lwjgl.opengl.GL46
 import org.lwjgl.stb.STBImage
+import utils.makeTexture2DArray
 import utils.readTexture
+import org.lwjgl.BufferUtils
 
 // https://en.wikibooks.org/wiki/OpenGL_Programming/Modern_OpenGL_Tutorial_Text_Rendering_02
 
@@ -20,8 +22,11 @@ class TextureAtlas(private val filepath: String) : GLResource {
         val subTextureSize = 64
         val mipLevelCount = 1
         val layerCount = 64
-        val (buffer, width, height) = readTexture(this.filepath)
+        val (buffer, width, height) =  readTexture(this.filepath, false)
         assert(buffer != null)
+        val buffer2d = makeTexture2DArray(buffer!!, 512, 64)
+        STBImage.stbi_image_free(buffer)
+
         this.width = width
         this.height = height
         assert(this.width == 512)
@@ -31,24 +36,20 @@ class TextureAtlas(private val filepath: String) : GLResource {
         GL46.glBindTexture(GL46.GL_TEXTURE_2D_ARRAY, this.textureID)
         GL46.glTexStorage3D(
             GL46.GL_TEXTURE_2D_ARRAY, mipLevelCount, GL46.GL_RGBA8,
-            subTextureSize, subTextureSize, 64
+            subTextureSize, subTextureSize, layerCount
         )
-        for (i in 0 until 8*8) {
-            val xOffset = 0
-            val yOffset = 64*7
-            GL46.glTexSubImage3D(
-                GL46.GL_TEXTURE_2D_ARRAY, 0, xOffset, yOffset, i,
-                subTextureSize, subTextureSize, layerCount,
-                GL46.GL_RGBA, GL46.GL_UNSIGNED_BYTE,
-                buffer!!
-            )
-        }
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_S, GL46.GL_REPEAT)
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_T, GL46.GL_REPEAT)
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR_MIPMAP_NEAREST)
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST)
 
-        STBImage.stbi_image_free(buffer!!)
+        GL46.glTexSubImage3D(
+            GL46.GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0,
+            subTextureSize, subTextureSize, layerCount,
+            GL46.GL_RGBA, GL46.GL_UNSIGNED_BYTE,
+            buffer2d
+        )
+
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D_ARRAY, GL46.GL_TEXTURE_WRAP_S, GL46.GL_REPEAT)
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D_ARRAY, GL46.GL_TEXTURE_WRAP_T, GL46.GL_REPEAT)
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D_ARRAY, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR_MIPMAP_NEAREST)
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D_ARRAY, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST)
     }
 
     override fun tearDown() {
@@ -57,7 +58,7 @@ class TextureAtlas(private val filepath: String) : GLResource {
 
     fun bind(shader: Shader) {
         GL46.glActiveTexture(TEXTURE_NUMBER)
-        GL46.glBindTexture(GL46.GL_TEXTURE_2D, this.textureID)
+        GL46.glBindTexture(GL46.GL_TEXTURE_2D_ARRAY, this.textureID)
         shader.uniform1i("TEXTURE2", TEXTURE_NUMBER_INT)
     }
 }

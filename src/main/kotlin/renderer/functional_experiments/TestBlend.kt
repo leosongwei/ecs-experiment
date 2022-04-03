@@ -42,6 +42,7 @@ fun main() {
     shader.uniformMatrix4fv("view", view)
 
     val textureAtlas = TextureAtlas("tiles.png")
+    textureAtlas.setUp()
     textureAtlas.bind(shader)
 
     while (true) {

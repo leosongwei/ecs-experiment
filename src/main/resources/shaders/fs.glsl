@@ -1,5 +1,6 @@
 #version 460 core
 uniform sampler2D TEXTURE1;
+uniform sampler2DArray TEXTURE2;
 
 flat in int textureRow;
 flat in int textureCol;
@@ -20,6 +21,7 @@ vec2 atlasCoord() {
 }
 
 void main(){
-    vec4 texColor = texture(TEXTURE1, atlasCoord());
+    //vec4 texColor = texture(TEXTURE1, atlasCoord());
+    vec4 texColor = texture(TEXTURE2, vec3(fragTexCoord, 1));
     color = texColor;
 }
