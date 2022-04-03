@@ -1,10 +1,11 @@
 package common
 
+import org.joml.Vector2i
 import org.joml.Vector2f
 import renderer.MapNodeRenderData
 import renderer.Shader
 
-class MapNode(private val origin: Vector2f) {
+class MapNode(private val origin: Vector2i) {
     companion object {
         const val SIZE = 128
     }
@@ -16,6 +17,9 @@ class MapNode(private val origin: Vector2f) {
         return x + y * SIZE
     }
 
+    fun getBaseX(): Int {return origin.x}
+    fun getBaseY(): Int {return origin.y}
+
     fun getTile(x: Int, y: Int): Tile {
         return Tile(tiles[offset(x, y)])
     }
@@ -25,7 +29,7 @@ class MapNode(private val origin: Vector2f) {
     }
 
     fun setupRenderData() {
-        this.renderData = MapNodeRenderData(this.origin)
+        this.renderData = MapNodeRenderData(Vector2f(this.origin))
         this.renderData!!.setUp(this)
     }
 
