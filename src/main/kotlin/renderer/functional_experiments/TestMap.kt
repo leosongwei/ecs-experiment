@@ -34,12 +34,8 @@ fun main() {
         1f,
         -1f
     )
-    val view = Matrix4f().scale(2f/256f).translate(
-        Vector3f(128f, 128f, 0f).negate()
-    )
-    shader.uniformMatrix4fv("projection", ortho)
-    shader.uniformMatrix4fv("view", view)
-
+    var scale = 2f / 256f
+    val viewCenter = Vector3f(128f, 128f, 0f)
     val textureAtlas = TextureAtlas("tiles.png")
     textureAtlas.setUp()
     textureAtlas.bind(shader)
@@ -47,9 +43,35 @@ fun main() {
     val map = GameMap("test_map.png")
     map.setUpRenderData()
 
-    println(map.mapNodeArray[0].origin)
+    fun handleKeys() {
+        if (mainWindow.getKeyPressed(GLFW.GLFW_KEY_KP_ADD)) {
+            scale *= 1.1f
+        }
+        if (mainWindow.getKeyPressed(GLFW.GLFW_KEY_KP_SUBTRACT)) {
+            scale *= 0.9f
+        }
+        if (mainWindow.getKeyPressed(GLFW.GLFW_KEY_UP)) {
+            viewCenter.y += (1f / scale) * 0.05f
+        }
+        if (mainWindow.getKeyPressed(GLFW.GLFW_KEY_DOWN)) {
+            viewCenter.y -= (1f / scale) * 0.05f
+        }
+        if (mainWindow.getKeyPressed(GLFW.GLFW_KEY_RIGHT)) {
+            viewCenter.x += (1f / scale) * 0.05f
+        }
+        if (mainWindow.getKeyPressed(GLFW.GLFW_KEY_LEFT)) {
+            viewCenter.x -= (1f / scale) * 0.05f
+        }
+    }
 
-    while (true) {
+    while (!mainWindow.shouldClose()) {
+        handleKeys()
+        val view = Matrix4f().scale(scale).translate(
+            Vector3f(viewCenter).negate()
+        )
+        shader.uniformMatrix4fv("projection", ortho)
+        shader.uniformMatrix4fv("view", view)
+
         GL46.glClear(GL46.GL_COLOR_BUFFER_BIT or GL46.GL_DEPTH_BUFFER_BIT)
         map.render(shader)
 
@@ -57,3 +79,4 @@ fun main() {
         GLFW.glfwPollEvents()
     }
 }
+

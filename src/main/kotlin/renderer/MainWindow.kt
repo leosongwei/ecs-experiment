@@ -37,8 +37,10 @@ class MainWindow(width: Int = 1920, height: Int = 1080) {
         GLFW.glfwSetKeyCallback(
             window
         ) { window: Long, key: Int, scancode: Int, action: Int, mods: Int ->
-            if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) GLFW.glfwSetWindowShouldClose(window,
-                true) // We will detect this in the rendering loop
+            if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
+                GLFW.glfwSetWindowShouldClose(window,
+                    true)
+            } // We will detect this in the rendering loop
         }
 
         GLFW.glfwSetFramebufferSizeCallback(window) { window: Long, w: Int, h: Int ->
@@ -79,6 +81,18 @@ class MainWindow(width: Int = 1920, height: Int = 1080) {
         GL11.glClearColor(0.1f, 0.1f, 0.0f, 1.0f)
         GL11.glViewport(0, 0, this.width, this.height)
         GL11.glEnable(GL11.GL_DEPTH_TEST)
+    }
+
+    fun shouldClose(): Boolean {
+        return GLFW.glfwWindowShouldClose(this.window)
+    }
+
+    fun getKey(key: Int): Int {
+        return GLFW.glfwGetKey(this.window, key)
+    }
+
+    fun getKeyPressed(key: Int): Boolean {
+        return GLFW.glfwGetKey(this.window, key) == GLFW.GLFW_PRESS
     }
 
     fun swapBuffers(){
