@@ -38,7 +38,7 @@ class GameMap(private val filepath: String) {
         }
     }
 
-    private val mapNodeArray: Array<MapNode>
+    val mapNodeArray: Array<MapNode>
     private val size: Int
 
     init {

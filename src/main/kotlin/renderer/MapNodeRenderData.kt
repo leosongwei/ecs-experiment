@@ -21,9 +21,12 @@ class MapNodeRenderData(private val origin: Vector2f) {
     private var vao: Int = 0
     private var vbo: Int = 0
     private var ebo: Int = 0
+    private var eboSize: Int = 0
 
     fun setUp(mapNode: MapNode) {
+
         val (vertexBuffer, eboIndices) = createVertexBuffer(mapNode)
+        eboSize = eboIndices.size
 
         vao = GL46.glGenVertexArrays()
         GL46.glBindVertexArray(vao)
@@ -101,5 +104,6 @@ class MapNodeRenderData(private val origin: Vector2f) {
             Matrix4f().translate(
                 Vector3f(this.origin, -1f)
             ))
+        GL46.glDrawElements(GL46.GL_TRIANGLES, eboSize, GL46.GL_UNSIGNED_INT, 0)
     }
 }

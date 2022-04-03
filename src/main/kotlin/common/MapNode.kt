@@ -5,7 +5,7 @@ import org.joml.Vector2f
 import renderer.MapNodeRenderData
 import renderer.Shader
 
-class MapNode(private val origin: Vector2i) {
+class MapNode(val origin: Vector2i) {
     companion object {
         const val SIZE = 128
     }
