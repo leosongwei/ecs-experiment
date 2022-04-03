@@ -7,9 +7,9 @@ import java.nio.ByteBuffer
 class GameMap(private val filepath: String) {
     companion object {
         private fun color(r: Int, g: Int, b: Int, a: Int): UInt {
-            return ((r ushr 24) or
-                    (g ushr 16) or
-                    (b ushr 8) or
+            return ((r shl 24) or
+                    (g shl 16) or
+                    (b shl 8) or
                     a
                     ).toUInt()
         }
@@ -20,17 +20,20 @@ class GameMap(private val filepath: String) {
                 color(255, 255, 0, 255) -> Tile(TileType.Sand)
                 color(255, 0, 0, 255) -> Tile(TileType.Wall)
                 color(0, 0, 255, 255) -> Tile(TileType.Water)
-                else -> Tile(TileType.Invalid)
+                else -> {
+                    println("Invalid!")
+                    Tile(TileType.Invalid)
+                }
             }
         }
 
-        fun getFromImage(x: Int, y: Int, size: Int, buffer: ByteBuffer): UInt {
-            val offset = (x + y * size) * 4
-            return ((buffer[offset].toInt() ushr 24) or
-                    (buffer[offset + 1].toInt() ushr 16) or
-                    (buffer[offset + 2].toInt() ushr 8) or
-                    buffer[offset + 3].toInt()
-                    ).toUInt()
+        fun getFromImage(x: Int, y: Int, width: Int, buffer: ByteBuffer): UInt {
+            val offset = (x + y * width) * 4
+            return ((buffer[offset].toUByte().toUInt() shl 24) or
+                    (buffer[offset + 1].toUByte().toUInt() shl 16) or
+                    (buffer[offset + 2].toUByte().toUInt() shl 8) or
+                    buffer[offset + 3].toUByte().toUInt()
+                    )
         }
     }
 
