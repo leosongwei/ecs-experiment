@@ -7,7 +7,6 @@ uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 view;
 
-
 out int textureCode;
 out vec2 fragTexCoord;
 

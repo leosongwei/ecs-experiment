@@ -2,9 +2,12 @@ package renderer
 
 import common.MapNode
 import common.TileType
+import org.joml.Matrix4f
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL46
 import java.nio.ByteBuffer
+import org.joml.Vector2f
+import org.joml.Vector3f
 
 val tileToTextureCode = hashMapOf<TileType, Int>(
     TileType.Invalid to 0,
@@ -14,7 +17,7 @@ val tileToTextureCode = hashMapOf<TileType, Int>(
     TileType.Water to 4
 )
 
-class MapNodeRenderData {
+class MapNodeRenderData(private val origin: Vector2f) {
     private var vao: Int = 0
     private var vbo: Int = 0
     private var ebo: Int = 0
@@ -33,7 +36,7 @@ class MapNodeRenderData {
         GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, ebo)
         GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, eboIndices, GL46.GL_STATIC_DRAW)
 
-        val vertexSize = (4+1) * 4
+        val vertexSize = (4 + 1) * 4
         // bind x, y
         GL46.glVertexAttribPointer(0, 2, GL46.GL_FLOAT, false, vertexSize, 0)
         GL46.glEnableVertexAttribArray(0)
@@ -47,7 +50,7 @@ class MapNodeRenderData {
 
     private fun createVertexBuffer(mapNode: MapNode): Pair<ByteBuffer, IntArray> {
         // TODO: Optimize Mesh
-        val vertexBuffer = BufferUtils.createByteBuffer((4+1) * 4 * 4)
+        val vertexBuffer = BufferUtils.createByteBuffer((4 + 1) * 4 * 4)
 
         val indexArray = intArrayOf(6 * MapNode.SIZE * MapNode.SIZE)
         var indexArrayPosition = 0
@@ -73,14 +76,14 @@ class MapNodeRenderData {
                 val textureCode = tileToTextureCode.getOrDefault(
                     tile.getType(), tileToTextureCode[TileType.Invalid]
                 )!!
-                for(i in 0 until 4) {
-                    vertexBuffer.putFloat(vertices[i*2])
-                    vertexBuffer.putFloat(vertices[i*2+1])
-                    vertexBuffer.putFloat(uvs[i*2])
-                    vertexBuffer.putFloat(uvs[i*2+1])
+                for (i in 0 until 4) {
+                    vertexBuffer.putFloat(vertices[i * 2])
+                    vertexBuffer.putFloat(vertices[i * 2 + 1])
+                    vertexBuffer.putFloat(uvs[i * 2])
+                    vertexBuffer.putFloat(uvs[i * 2 + 1])
                     vertexBuffer.putInt(textureCode)
                 }
-                for(i in 0 until 6) {
+                for (i in 0 until 6) {
                     indexArray[i + indexArrayPosition] = indexPattern[i] + indexStart
                 }
                 indexStart += 4
@@ -89,5 +92,14 @@ class MapNodeRenderData {
         }
         vertexBuffer.flip()
         return Pair(vertexBuffer, indexArray)
+    }
+
+    fun render(shader: Shader) {
+        GL46.glBindVertexArray(this.vao)
+        shader.uniformMatrix4fv(
+            "model",
+            Matrix4f().translate(
+                Vector3f(this.origin, -1f)
+            ))
     }
 }
