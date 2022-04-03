@@ -1,6 +1,7 @@
 package common
 
 import org.joml.Vector2i
+import renderer.Shader
 import utils.readTexture
 import java.nio.ByteBuffer
 
@@ -55,13 +56,11 @@ class GameMap(private val filepath: String) {
         val mapNodeArray = Array<MapNode>(sizeInMapNode * sizeInMapNode) {
             val x = it.mod(sizeInMapNode) * MapNode.SIZE
             val y = (it / sizeInMapNode) * MapNode.SIZE
-            println("$x, $y")
             MapNode(Vector2i(x, y))
         }
         for (node in mapNodeArray) {
             val baseX = node.getBaseX()
             val baseY = node.getBaseY()
-            println("baseX: $baseX, baseY: $baseY")
             for (x in 0 until MapNode.SIZE) {
                 for (y in 0 until MapNode.SIZE) {
                     val color = getFromImage(baseX + x, baseY + y, width, buffer!!)
@@ -72,6 +71,18 @@ class GameMap(private val filepath: String) {
         }
 
         return Pair(mapNodeArray, width)
+    }
+
+    fun setUpRenderData() {
+        this.mapNodeArray.forEach {
+            it.setUpRenderData()
+        }
+    }
+
+    fun render(shader: Shader) {
+        this.mapNodeArray.forEach {
+            it.render(shader)
+        }
     }
 }
 

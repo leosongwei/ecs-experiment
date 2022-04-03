@@ -28,7 +28,7 @@ class MapNode(private val origin: Vector2i) {
         tiles[offset(x, y)] = tile.toInt()
     }
 
-    fun setupRenderData() {
+    fun setUpRenderData() {
         this.renderData = MapNodeRenderData(Vector2f(this.origin))
         this.renderData!!.setUp(this)
     }

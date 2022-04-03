@@ -50,9 +50,9 @@ class MapNodeRenderData(private val origin: Vector2f) {
 
     private fun createVertexBuffer(mapNode: MapNode): Pair<ByteBuffer, IntArray> {
         // TODO: Optimize Mesh
-        val vertexBuffer = BufferUtils.createByteBuffer((4 + 1) * 4 * 4)
+        val vertexBuffer = BufferUtils.createByteBuffer((4 + 1) * 4 * 4 * MapNode.SIZE * MapNode.SIZE)
 
-        val indexArray = intArrayOf(6 * MapNode.SIZE * MapNode.SIZE)
+        val indexArray = IntArray(6 * MapNode.SIZE * MapNode.SIZE)
         var indexArrayPosition = 0
         var indexStart = 0
         val indexPattern = intArrayOf(0, 3, 1, 0, 2, 3)
