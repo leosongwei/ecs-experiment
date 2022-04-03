@@ -18,4 +18,8 @@ value class Tile(private val typeCode: Int)
             TileType.fromNumber(this.typeCode)
         )
     }
+
+    fun getType(): TileType {
+        return TileType.fromNumber(this.typeCode)
+    }
 }

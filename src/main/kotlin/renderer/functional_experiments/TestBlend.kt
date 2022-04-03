@@ -23,7 +23,7 @@ fun main() {
     shader.setUp()
     shader.use()
 
-    val sprite = Sprite(Texture("tiles.png"), 2, 0)
+    val sprite = Sprite(16)
     sprite.setUp()
     sprite.bind(shader)
 
