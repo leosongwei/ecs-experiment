@@ -9,13 +9,7 @@ import java.nio.ByteBuffer
 import org.joml.Vector2f
 import org.joml.Vector3f
 
-val tileToTextureCode = hashMapOf<TileType, Int>(
-    TileType.Invalid to 0,
-    TileType.Grass to 1,
-    TileType.Sand to 2,
-    TileType.Wall to 3,
-    TileType.Water to 4
-)
+
 
 class MapNodeRenderData(private val origin: Vector2f) {
     private var vao: Int = 0

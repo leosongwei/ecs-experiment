@@ -14,9 +14,7 @@ class MapNodeMeshBuilder {
             for (x in 0 until MapNode.SIZE) {
                 for (y in 0 until MapNode.SIZE) {
                     val tile = mapNode.getTile(x, y)
-                    val textureCode = tileToTextureCode.getOrDefault(
-                        tile.getType(), tileToTextureCode[TileType.Invalid]
-                    )!!
+                    val textureCode = TileTextureCodeRegistry.getCode(tile.getType())
                     val rect = TilesRect(
                         Vector2i(x, y),
                         Vector2i(x + 1, y + 1),
@@ -29,6 +27,10 @@ class MapNodeMeshBuilder {
         }
 
         fun mergeBuild(mapNode: MapNode): ArrayList<TilesRect> {
+            for (tileType in TileType.values()) {
+                val textureCode = TileTextureCodeRegistry.getCode(tileType)
+                val mask = BooleanArray(MapNode.SIZE * MapNode.SIZE)
+            }
             TODO()
         }
 
