@@ -27,11 +27,75 @@ class MapNodeMeshBuilder {
         }
 
         fun mergeBuild(mapNode: MapNode): ArrayList<TilesRect> {
+            val result = ArrayList<TilesRect>()
+
             for (tileType in TileType.values()) {
                 val textureCode = TileTextureCodeRegistry.getCode(tileType)
-                val mask = BooleanArray(MapNode.SIZE * MapNode.SIZE)
+                val mask = BooleanArray(MapNode.SIZE * MapNode.SIZE) { false }
+                fun getMask(x: Int, y: Int): Boolean {
+                    return mask[x + y * MapNode.SIZE]
+                }
+
+                fun setMask(x: Int, y: Int, value: Boolean) {
+                    mask[x + y * MapNode.SIZE] = value
+                }
+
+                for (x in 0 until MapNode.SIZE) {
+                    for (y in 0 until MapNode.SIZE) {
+                        if (mapNode.getTile(x, y).getType() == tileType) {
+                            setMask(x, y, true)
+                        }
+                    }
+                }
+
+                fun scanRow(row: Int) {
+                    for (xScan in 0 until MapNode.SIZE) {
+                        val isCurrent = getMask(xScan, row)
+                        if (isCurrent) {
+                            val bottomEdge = row
+                            val leftEdge = xScan
+                            var rightEdge = xScan
+                            for (x in leftEdge until MapNode.SIZE) {
+                                if (getMask(x, row)) {
+                                    rightEdge = x + 1
+                                } else {
+                                    break
+                                }
+                            }
+                            var topEdge = row + 1
+                            for (y in row until MapNode.SIZE) {
+                                var allSame = true
+                                for (x in leftEdge until rightEdge) {
+                                    if (!getMask(x, y)) {
+                                        allSame = false
+                                        break
+                                    }
+                                }
+                                if (allSame) {
+                                    topEdge = y + 1
+                                } else {
+                                    break
+                                }
+                            }
+                            result.add(TilesRect(
+                                Vector2i(leftEdge, bottomEdge),
+                                Vector2i(rightEdge, topEdge),
+                                textureCode
+                            ))
+                            for (x in leftEdge until rightEdge) {
+                                for (y in bottomEdge until topEdge) {
+                                    setMask(x, y, false)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (row in 0 until MapNode.SIZE) {
+                    scanRow(row)
+                }
             }
-            TODO()
+            return result
         }
 
         fun buildVertexBuffer(mapNodeMesh: ArrayList<TilesRect>): Pair<ByteBuffer, IntArray> {
@@ -53,8 +117,8 @@ class MapNodeMeshBuilder {
                     w, 0f
                 )
                 for (i in 0 until 4) {
-                    val u = uvs[i*2]
-                    val v = uvs[i*2 + 1]
+                    val u = uvs[i * 2]
+                    val v = uvs[i * 2 + 1]
                     val x = u - 0.5f + rect.bottomLeft.x
                     val y = v - 0.5f + rect.bottomLeft.y
                     vertexBuffer.putFloat(x)
