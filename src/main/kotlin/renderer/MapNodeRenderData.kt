@@ -53,48 +53,8 @@ class MapNodeRenderData(private val origin: Vector2f) {
 
     private fun createVertexBuffer(mapNode: MapNode): Pair<ByteBuffer, IntArray> {
         // TODO: Optimize Mesh
-        val vertexBuffer = BufferUtils.createByteBuffer((4 + 1) * 4 * 4 * MapNode.SIZE * MapNode.SIZE)
-
-        val indexArray = IntArray(6 * MapNode.SIZE * MapNode.SIZE)
-        var indexArrayPosition = 0
-        var indexStart = 0
-        val indexPattern = intArrayOf(0, 3, 1, 0, 2, 3)
-
-        for (x in 0 until MapNode.SIZE) {
-            for (y in 0 until MapNode.SIZE) {
-                val tile = mapNode.getTile(x, y)
-                val vertices = floatArrayOf(
-                    // x, y
-                    x - 0.5f, y + 0.5f,
-                    x + 0.5f, y + 0.5f,
-                    x - 0.5f, y - 0.5f,
-                    x + 0.5f, y - 0.5f
-                )
-                val uvs = floatArrayOf(
-                    0f, 1f,
-                    1f, 1f,
-                    0f, 0f,
-                    1f, 0f
-                )
-                val textureCode = tileToTextureCode.getOrDefault(
-                    tile.getType(), tileToTextureCode[TileType.Invalid]
-                )!!
-                for (i in 0 until 4) {
-                    vertexBuffer.putFloat(vertices[i * 2])
-                    vertexBuffer.putFloat(vertices[i * 2 + 1])
-                    vertexBuffer.putFloat(uvs[i * 2])
-                    vertexBuffer.putFloat(uvs[i * 2 + 1])
-                    vertexBuffer.putInt(textureCode)
-                }
-                for (i in 0 until 6) {
-                    indexArray[i + indexArrayPosition] = indexPattern[i] + indexStart
-                }
-                indexStart += 4
-                indexArrayPosition += 6
-            }
-        }
-        vertexBuffer.flip()
-        return Pair(vertexBuffer, indexArray)
+        val mesh = MapNodeMeshBuilder.naiveBuild(mapNode)
+        return MapNodeMeshBuilder.buildVertexBuffer(mesh)
     }
 
     fun render(shader: Shader) {
