@@ -53,8 +53,8 @@ class MapNodeMeshBuilder {
                 for (i in 0 until 4) {
                     val u = uvs[i*2]
                     val v = uvs[i*2 + 1]
-                    val x = u - 0.5f
-                    val y = v - 0.5f
+                    val x = u - 0.5f + rect.bottomLeft.x
+                    val y = v - 0.5f + rect.bottomLeft.y
                     vertexBuffer.putFloat(x)
                     vertexBuffer.putFloat(y)
                     vertexBuffer.putFloat(u)
