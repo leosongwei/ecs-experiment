@@ -40,7 +40,7 @@ fun main() {
     textureAtlas.setUp()
     textureAtlas.bind(shader)
 
-    val map = GameMap("test_map.png")
+    val map = GameMap("desert.png")
     map.setUpRenderData()
 
     fun handleKeys() {

@@ -6,7 +6,6 @@ import utils.makeTexture2DArray
 import utils.readTexture
 import org.lwjgl.BufferUtils
 
-// https://en.wikibooks.org/wiki/OpenGL_Programming/Modern_OpenGL_Tutorial_Text_Rendering_02
 
 class TextureAtlas(private val filepath: String) : GLResource {
     companion object {
@@ -20,7 +19,7 @@ class TextureAtlas(private val filepath: String) : GLResource {
 
     override fun setUp() {
         val subTextureSize = 64
-        val mipLevelCount = 1
+        val mipLevelCount = 4
         val layerCount = 64
         val (buffer, width, height) =  readTexture(this.filepath, false)
         assert(buffer != null)
@@ -50,6 +49,8 @@ class TextureAtlas(private val filepath: String) : GLResource {
         GL46.glTexParameteri(GL46.GL_TEXTURE_2D_ARRAY, GL46.GL_TEXTURE_WRAP_T, GL46.GL_REPEAT)
         GL46.glTexParameteri(GL46.GL_TEXTURE_2D_ARRAY, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR_MIPMAP_NEAREST)
         GL46.glTexParameteri(GL46.GL_TEXTURE_2D_ARRAY, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST)
+
+        GL46.glGenerateMipmap(GL46.GL_TEXTURE_2D_ARRAY)
     }
 
     override fun tearDown() {
