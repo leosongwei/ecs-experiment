@@ -18,8 +18,9 @@ class MapNodeRenderData(private val origin: Vector2f) {
     private var eboSize: Int = 0
 
     fun setUp(mapNode: MapNode) {
-
-        val (vertexBuffer, eboIndices) = createVertexBuffer(mapNode)
+        val mesh = MapNodeMeshBuilder.mergeBuild(mapNode)
+        // val mesh = MapNodeMeshBuilder.naiveBuild(mapNode)
+        val (vertexBuffer, eboIndices) = MapNodeMeshBuilder.buildVertexBuffer(mesh)
         eboSize = eboIndices.size
 
         vao = GL46.glGenVertexArrays()
@@ -43,12 +44,6 @@ class MapNodeRenderData(private val origin: Vector2f) {
         // bind texture code
         GL46.glVertexAttribIPointer(2, 1, GL46.GL_INT, vertexSize, (4 * 4).toLong())
         GL46.glEnableVertexAttribArray(2)
-    }
-
-    private fun createVertexBuffer(mapNode: MapNode): Pair<ByteBuffer, IntArray> {
-        // TODO: Optimize Mesh
-        val mesh = MapNodeMeshBuilder.naiveBuild(mapNode)
-        return MapNodeMeshBuilder.buildVertexBuffer(mesh)
     }
 
     fun render(shader: Shader) {

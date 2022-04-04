@@ -14,7 +14,7 @@ fun main() {
     val mainWindow = MainWindow()
     val resourceManager = ResourceFile()
 
-    GL46.glClearColor(0.0f, 0.2f, 0.0f, 0.0f)
+    GL46.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
     GL46.glEnable(GL46.GL_DEPTH_TEST)
     GL46.glEnable(GL46.GL_BLEND);
     GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA)
@@ -37,6 +37,7 @@ fun main() {
     var scale = 2f / 256f
     val viewCenter = Vector3f(128f, 128f, 0f)
     val textureAtlas = TextureAtlas("tiles.png")
+
     textureAtlas.setUp()
     textureAtlas.bind(shader)
 
@@ -73,6 +74,9 @@ fun main() {
         shader.uniformMatrix4fv("view", view)
 
         GL46.glClear(GL46.GL_COLOR_BUFFER_BIT or GL46.GL_DEPTH_BUFFER_BIT)
+
+        GL46.glPolygonMode(GL46.GL_FRONT_AND_BACK, GL46.GL_FILL)
+        //GL46.glPolygonMode(GL46.GL_FRONT_AND_BACK, GL46.GL_LINE)
         map.render(shader)
 
         mainWindow.swapBuffers()
