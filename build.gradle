@@ -41,6 +41,16 @@ dependencies {
     implementation "org.joml:joml:${jomlVersion}"
 }
 
+task fatJar(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Main-Class': "renderer.functional_experiments.TestMapKt"
+    }
+    archiveBaseName = "${rootProject.name}"
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 test {
     useJUnitPlatform()
 }
